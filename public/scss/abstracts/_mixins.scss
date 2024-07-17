@@ -6,31 +6,31 @@
   }
 
   @if ($breakpoint ==phone) {
-    @media only screen and (max-width: 40em) {
+    @media only screen and (max-width: 36em) {
       @content;
     }
   }
 
   @if ($breakpoint ==tablet) {
-    @media only screen and (max-width: 48em) {
+    @media only screen and (max-width: 44em) {
       @content;
     }
   }
 
   @if($breakpoint ==tab-land) {
-    @media only screen and (max-width: 58em) {
+    @media only screen and (max-width: 54em) {
       @content;
     }
   }
 
   @if($breakpoint ==desktop) {
-    @media only screen and (max-width: 77.5em) {
+    @media only screen and (max-width: 73.5em) {
       @content;
     }
   }
 
   @if($breakpoint ==desktop-big) {
-    @media only screen and (max-width: 89.5em) {
+    @media only screen and (max-width: 85.5em) {
       @content;
     }
   }
