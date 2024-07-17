@@ -1,0 +1,69 @@
+/*
+* RESET
+*/
+*,
+*:after,
+*:before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  font-weight: 400;
+}
+
+img {
+  display: block;
+}
+
+html {
+  font-size: 10px;
+}
+
+body {
+  box-sizing: border-box;
+
+  background-image: url("../../images/background-desktop.svg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  min-height: 100vh;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--btn-gradient) var(--blue-1200);
+
+  @include mixins.respond(tablet) {
+    background-image: url("../../images/background-tablet.svg");
+  }
+
+  @include mixins.respond(phone) {
+    background-image: url("../../images/background-mobile.svg");
+  }
+}
+
+::-webkit-scrollbar {
+  width: .8rem;
+  height: .8rem;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--blue-1200);
+}
+
+::-webkit-scrollbar-thumb {
+  cursor: pointer;
+  border-radius: 1rem;
+  background: var(--btn-gradient);
+}

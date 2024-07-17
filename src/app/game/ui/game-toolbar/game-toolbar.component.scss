@@ -1,0 +1,115 @@
+@use "../../../../../public/scss/abstracts/_mixins.scss" as mixins;
+
+.game-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.6rem;
+
+  @include mixins.respond(tab-land) {
+    padding: 0 1.6rem 0 .8rem;
+  }
+
+  @include mixins.respond(phone) {
+    padding: 0;
+  }
+
+  &__start {
+    display: flex;
+    align-items: center;
+    gap: 5.7rem;
+
+    @include mixins.respond(tab-land) {
+      gap: 3.2rem;
+    }
+
+    @include mixins.respond(phone) {
+      gap: 1.6rem;
+    }
+  }
+
+  &__icon {
+    @include mixins.respond(tab-land) {
+      width: 2.5rem;
+    }
+
+    @include mixins.respond(phone) {
+      width: 1.6rem;
+    }
+  }
+
+  &__category {
+    color: var(--white-100);
+
+    @include mixins.respond(tab-land) {
+      font-size: 4.8rem;
+      text-transform: uppercase;
+    }
+
+    @include mixins.respond(phone) {
+      font-size: 4rem;
+      text-transform: unset;
+      letter-spacing: -.25px;
+    }
+  }
+
+  &__end {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+
+    @include mixins.respond(phone) {
+      gap: 1.6rem
+    }
+  }
+
+  &__health-bar {
+    --health-radius: 9.6rem;
+    --health-padding: .9rem 1.1rem;
+
+    border-radius: var(--health-radius);
+    height: 3.1rem;
+    width: 24rem;
+
+    @include mixins.respond(tab-land) {
+      width: 16rem;
+    }
+
+    @include mixins.respond(phone) {
+      --health-padding: 4px;
+      height: 1.6rem;
+      width: 5.7rem;
+    }
+
+    &::-webkit-progress-bar {
+      border-radius: var(--health-radius);
+      background: var(--white-100);
+      padding: var(--health-padding);
+    }
+
+    &::-moz-progress-bar {
+      border-radius: var(--health-radius);
+      background: var(--white-100);
+      padding: var(--health-padding);
+    }
+
+    &::-webkit-progress-value {
+      border-radius: var(--health-radius);
+      background: var(--blue-400);
+      transition: all .4s;
+    }
+
+    &::-moz-progress-value {
+      border-radius: var(--health-radius);
+      background: var(--blue-400);
+      transition: all .4s;
+    }
+  }
+
+  &__health-icon {
+    width: 5.3rem;
+
+    @include mixins.respond(phone) {
+      width: 2.6rem;
+    }
+  }
+}

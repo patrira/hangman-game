@@ -1,0 +1,131 @@
+@use "../../../../../public/scss/abstracts/_mixins.scss" as mixins;
+
+:host {
+  max-width: 59.2rem;
+  width: 100%;
+}
+
+.mask {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-gradient);
+  opacity: .75;
+  z-index: 1;
+}
+
+.menu {
+  background: var(--menu-gradient);
+  border-radius: 7.2rem;
+  box-shadow: var(--shadow-xl-blue), var(--shadow-xxs-blue);
+  position: relative;
+  max-width: 59.2rem;
+  width: 100%;
+
+  @include mixins.respond(phone-small) {
+    border-radius: 4.8rem;
+  }
+
+  &--main {
+    margin-top: 11rem;
+    height: 50rem;
+
+    @include mixins.respond(phone-small) {
+      margin-top: 8rem;
+      height: unset;
+    }
+
+    .menu__header {
+      transform: translateY(-11rem);
+
+
+      @include mixins.respond(phone-small) {
+        transform: translateY(-5rem);
+      }
+    }
+
+    .menu__items {
+      padding-top: 12.9rem;
+      gap: 5.8rem;
+
+      @include mixins.respond(phone-small) {
+        padding: 13.8rem 1.6rem 6.4rem 1.6rem;
+        gap: 5.7rem;
+
+        ::ng-deep .btn--primary {
+          border-radius: 4rem;
+        }
+      }
+    }
+
+  }
+
+  &--secondary {
+    margin-top: 4.6rem;
+    height: 44.5rem;
+
+    @include mixins.respond(phone) {
+      margin-top: 3rem;
+    }
+
+    .menu__header {
+      transform: translateY(-9.2rem);
+
+      @include mixins.respond(phone) {
+        transform: translateY(-6.1rem);
+      }
+    }
+
+    .menu__items {
+      padding-top: 12rem;
+      gap: 3.4rem;
+
+      @include mixins.respond(phone) {
+        padding-top: 10.4rem;
+
+        ::ng-deep .btn--primary {
+          border-radius: 4rem;
+        }
+      }
+    }
+  }
+
+  &--overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+
+    @include mixins.respond(phone) {
+      left: 2.55rem;
+      right: 2.55rem;
+      width: unset;
+      transform: translate(0, -50%);
+    }
+  }
+
+  &__header {
+    position: absolute;
+    inset: 0 0 auto 0;
+    display: flex;
+    justify-content: center;
+
+    .heading--xl {
+      @include mixins.respond(tablet) {
+        font-size: 13.6rem;
+        letter-spacing: -1.3px;
+      }
+
+      @include mixins.respond(phone) {
+        font-size: 9.4rem;
+      }
+    }
+  }
+
+  &__items {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}

@@ -1,0 +1,156 @@
+@use "../../../../../public/scss/abstracts/_mixins.scss" as mixins;
+
+.btn {
+
+  &,
+  &:link,
+  &:visited {
+    border: 0 none;
+    outline: 0 none;
+    font-family: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all .4s;
+    text-align: center;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    transition: all .4s;
+  }
+
+  &--icon {
+    background-image: var(--btn-gradient);
+    border-radius: 50%;
+
+    &::before {
+      border-radius: 50%;
+    }
+
+    &--primary {
+      height: 20rem;
+      width: 20rem;
+      box-shadow: var(--shadow-sm-blue), var(--shadow-lg-pink);
+
+      &::before {
+        box-shadow: var(--shadow-sm-blue), var(--shadow-lg-pink);
+      }
+
+      @include mixins.respond(phone) {
+        height: 16rem;
+        width: 16rem;
+      }
+    }
+
+    &--secondary {
+      height: 9.4rem;
+      width: 9.4rem;
+      box-shadow: var(--shadow-sm-pink);
+
+      @include mixins.respond(tab-land) {
+        height: 6.4rem;
+        width: 6.4rem;
+      }
+
+      @include mixins.respond(phone) {
+        height: 4rem;
+        width: 4rem;
+        box-shadow: var(--shadow-sm-pink);
+      }
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      &::before {
+        background: var(--white-200);
+      }
+    }
+  }
+
+  &--primary {
+    background: var(--blue-100);
+    color: var(--white-100);
+    border-radius: 4rem;
+    padding: 1.2rem 6.4rem;
+    box-shadow: var(--shadow-xs-blue), var(--shadow-md-blue);
+
+    &::before {
+      border-radius: 4rem;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      &::before {
+        background: transparent;
+      }
+
+      background: var(--blue-600);
+      box-shadow: var(--shadow-xs-blue),
+      var(--shadow-lg-blue);
+    }
+
+    @include mixins.respond(phone) {
+      border-radius: 2rem;
+
+      &:before {
+        border-radius: 2rem;
+      }
+    }
+  }
+
+  &--secondary {
+    background: var(--btn-gradient);
+    color: var(--white-100);
+    border-radius: 4rem;
+    padding: 1.2rem 6.4rem;
+    box-shadow: var(--shadow-xs-blue), var(--shadow-xs-pink);
+
+    &::before {
+      border-radius: 4rem;
+      box-shadow: var(--shadow-xs-blue), var(--shadow-xs-pink);
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      &::before {
+        background: var(--white-200);
+      }
+    }
+  }
+
+  &--full {
+    height: 100%;
+    width: 100%;
+  }
+
+  &--keyboard {
+    background: var(--white-100);
+    color: var(--blue-400);
+    border-radius: 2.4rem;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background: var(--blue-100);
+      color: var(--white-100);
+    }
+
+    &:disabled {
+      background: var(--white-200);
+    }
+
+    @include mixins.respond(phone) {
+      border-radius: 8px;
+    }
+  }
+}

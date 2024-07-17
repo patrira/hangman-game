@@ -1,0 +1,49 @@
+:root {
+  // FONT
+  --font: "Mouse Memoirs", sans-serif;
+
+  // GENERALS
+  --width-lg: 176rem;
+
+  // COLORS
+  --white-100: #fff;
+  --white-200: rgba(255, 255, 255, .25);
+
+  --blue-100: #2463ff;
+  --blue-200: #7199ff;
+  --blue-300: #243041;
+  --blue-400: #261676;
+  --blue-500: #140e66;
+  --blue-600: #3C74FF;
+  --blue-700: #1a043a;
+  --blue-800: #151278;
+  --blue-900: #2b1677;
+  --blue-1000: #67b6ff;
+  --blue-1100: #344aba;
+  --blue-1200: rgba(0, 20, 121, 0.83);
+
+  --pink-100: #fe71fe;
+  --pink-200: #9D2DF5;
+  --pink-300: rgba(157, 45, 245, 0.25);
+  --pink-400: #C642FB;
+  --pink-500: #887DC0;
+
+  // GRADIENTS
+  --menu-gradient: linear-gradient(to bottom, var(--blue-1100), var(--blue-1200));
+  --btn-gradient: linear-gradient(to bottom, var(--pink-100), var(--blue-200));
+  --heading-gradient: linear-gradient(to bottom, var(--blue-1000), var(--white-100));
+  --bg-gradient: linear-gradient(to bottom, var(--blue-700), var(--blue-800) 70%, var(--blue-900));
+
+  // SHADOWS
+  --shadow-xl-blue: inset 0 -8px 0 4px var(--blue-500);
+  --shadow-lg-blue: inset 0 1px 0 6px var(--blue-100);
+  --shadow-md-blue: inset 0 1px 0 6px var(--blue-600);
+  --shadow-sm-blue: inset 0 -4px 0 5px var(--blue-300);
+  --shadow-xs-blue: inset 0 -2px 0 3px var(--blue-500);
+  --shadow-xxs-blue: inset 0 6px 0 8px var(--blue-100);
+
+  --shadow-lg-pink: inset 0 -12px 0 11px var(--pink-200);
+  --shadow-md-pink: inset 0 -6px 0 7px var(--pink-300);
+  --shadow-sm-pink: inset 0 -5px 0 -1px var(--pink-300);
+  --shadow-xs-pink: inset 0 1px 0 6px var(--pink-400);
+}
