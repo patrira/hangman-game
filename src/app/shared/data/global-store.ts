@@ -166,3 +166,7 @@ export const GlobalStore = signalStore(
     },
   })
 );
+export interface GlobalStoreInterface {
+  categoriesNames: () => string[];
+  startGame: (category: string) => void;
+}
