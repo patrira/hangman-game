@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { StrokifyDirective } from '../../directives/strokify.directive';
 import { ButtonComponent } from '../button/button.component';
 import { ButtonTemplateDirective } from '../../directives/button-template.directive';
@@ -22,34 +22,36 @@ import { ButtonTemplateDirective } from '../../directives/button-template.direct
         />
       </app-button>
 
-      <p class="heading heading--xl" appStrokify>{{ heading() }}</p>
+      <p class="heading heading--xl" appStrokify>{{ heading }}</p>
     </h1>
   `,
-  styles: `
-    @use "../../../../../public/scss/abstracts/_mixins.scss" as mixins;
+  styles: [
+    `
+      @use "../../../../../public/scss/abstracts/_mixins.scss" as mixins;
 
-    .heading-bar {
-      display: flex;
-      align-items: center;
-
-      @include mixins.respond(phone) {
-        justify-content: space-between;
-      }
-
-      &__icon {
-        @include mixins.respond(tab-land) {
-          width: 2.7rem;
-          margin-bottom: 1rem;
-        }
+      .heading-bar {
+        display: flex;
+        align-items: center;
 
         @include mixins.respond(phone) {
-          width: 1.8rem;
-          margin-bottom: 0.5rem;
+          justify-content: space-between;
+        }
+
+        &__icon {
+          @include mixins.respond(tab-land) {
+            width: 2.7rem;
+            margin-bottom: 1rem;
+          }
+
+          @include mixins.respond(phone) {
+            width: 1.8rem;
+            margin-bottom: 0.5rem;
+          }
         }
       }
-    }
-  `,
+    `,
+  ],
 })
 export class HeadingBarComponent {
-  heading = input.required<string>();
+  @Input() heading!: string;
 }

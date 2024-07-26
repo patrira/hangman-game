@@ -1,18 +1,10 @@
-import {
-  patchState,
-  signalStore,
-  withComputed,
-  withHooks,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
+import { Injectable, computed } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { Categories, Category } from '../models/category.model';
 import { Letter } from '../models/letter.model';
 import { Option } from '../models/option.model';
-import { computed, inject } from '@angular/core';
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import { MenuConfig } from '../models/menu.model';
 
 type GlobalState = {
@@ -33,140 +25,174 @@ const initialState: GlobalState = {
   menuConfig: { header: '', menuItems: [] },
 };
 
-export const GlobalStore = signalStore(
-  { providedIn: 'root' },
-  withState(initialState),
-  withComputed(
-    ({ categories, selectedCategory, selectedOption, menuConfig }) => ({
-      categoriesNames: computed(() => Object.keys(categories())),
-      optionsAvailable: computed(() =>
-        selectedCategory()
-          ? categories()[selectedCategory()!].filter((opt) => !opt.selected)
-          : []
-      ),
-      toGuessLetters: computed<Letter[]>(
-        () =>
-          [
-            ...new Set(selectedOption()?.replaceAll(' ', '').split('')),
-          ] as Letter[]
-      ),
-      menuOpen: computed(() => menuConfig().menuItems.length > 0),
-    })
-  ),
-  withComputed(({ attemptsLeft, toGuessLetters, attemptedLetters }) => ({
-    gameOutcome: computed<'WIN' | 'LOSE' | null>(() => {
-      if (attemptsLeft() === 0) return 'LOSE';
-      if (toGuessLetters().every((el) => attemptedLetters().includes(el)))
-        return 'WIN';
+@Injectable({
+  providedIn: 'root',
+})
+export class GlobalStoreService {
+  private state$ = new BehaviorSubject<GlobalState>(initialState);
 
+  categoriesNames$ = this.state$.pipe(
+    map(state => Object.keys(state.categories))
+  );
+
+  optionsAvailable$ = this.state$.pipe(
+    map(state =>
+      state.selectedCategory
+        ? state.categories[state.selectedCategory].filter(opt => !opt.selected)
+        : []
+    )
+  );
+
+  toGuessLetters$ = this.state$.pipe(
+    map(state =>
+      state.selectedOption
+        ? [...new Set(state.selectedOption.replaceAll(' ', '').split(''))] as Letter[]
+        : []
+    )
+  );
+
+  menuOpen$ = this.state$.pipe(
+    map(state => state.menuConfig.menuItems.length > 0)
+  );
+
+  gameOutcome$ = combineLatest([
+    this.state$.pipe(map(state => state.attemptsLeft)),
+    this.toGuessLetters$,
+    this.state$.pipe(map(state => state.attemptedLetters)),
+  ]).pipe(
+    map(([attemptsLeft, toGuessLetters, attemptedLetters]) => {
+      if (attemptsLeft === 0) return 'LOSE';
+      if (toGuessLetters.every(letter => attemptedLetters.includes(letter))) return 'WIN';
       return null;
-    }),
-  })),
-  withMethods((store, http = inject(HttpClient)) => ({
-    loadCategories: rxMethod<void>(
-      pipe(
-        switchMap(() => http.get<{ categories: Categories }>('data/data.json')),
-        tap(({ categories }) => patchState(store, { categories }))
+    })
+  );
+
+  constructor(private http: HttpClient) {
+    this.loadCategories();
+  }
+
+  private setState(newState: Partial<GlobalState>) {
+    this.state$.next({ ...this.state$.getValue(), ...newState });
+  }
+
+  loadCategories() {
+    this.http.get<{ categories: Categories }>('data/data.json')
+      .pipe(
+        tap(({ categories }) => this.setState({ categories }))
       )
-    ),
-    startGame(category: Category) {
-      patchState(store, { selectedCategory: category });
+      .subscribe();
+  }
 
-      const option =
-        store.optionsAvailable()[
-          Math.floor(Math.random() * store.optionsAvailable().length)
-        ];
+  startGame(category: Category) {
+    this.setState({ selectedCategory: category });
 
-      patchState(store, ({ categories }) => ({
-        categories: {
-          ...categories,
-          [category]: categories[category].map((el) =>
-            el.name === option.name ? { ...option, selected: true } : el
-          ),
-        },
-        selectedOption: option.name.toUpperCase().replaceAll(`'`, ''),
-        attemptsLeft: initialState.attemptsLeft,
-        attemptedLetters: [],
-        menuConfig: { ...initialState.menuConfig },
-      }));
-    },
-    attemptLetter(letter: Letter) {
-      if (store.attemptedLetters().includes(letter) || store.menuOpen()) return;
+    const optionsAvailable = this.state$.getValue().selectedCategory 
+        ? this.state$.getValue().categories[this.state$.getValue().selectedCategory].filter(opt => !opt.selected)
+        : [];
 
-      patchState(
-        store,
-        ({ attemptedLetters, attemptsLeft, selectedOption }) => ({
-          attemptedLetters: [...attemptedLetters, letter],
-          attemptsLeft: selectedOption?.includes(letter)
-            ? attemptsLeft
-            : attemptsLeft - 1,
-        })
-      );
+    const option = optionsAvailable[
+      Math.floor(Math.random() * optionsAvailable.length)
+    ];
 
-      if (store.gameOutcome()) {
-        this.openMenu();
-      }
-    },
-    quitGame() {
-      patchState(store, ({ categories }) => ({ ...initialState, categories }));
-      this.loadCategories();
-    },
-    openMenu() {
-      patchState(store, () => ({
-        menuConfig: {
-          header:
-            store.gameOutcome() === 'LOSE'
+    this.setState(state => ({
+      categories: {
+        ...state.categories,
+        [category]: state.categories[category].map(el =>
+          el.name === option.name ? { ...option, selected: true } : el
+        ),
+      },
+      selectedOption: option.name.toUpperCase().replaceAll(`'`, ''),
+      attemptsLeft: initialState.attemptsLeft,
+      attemptedLetters: [],
+      menuConfig: { ...initialState.menuConfig },
+    }));
+  }
+
+  attemptLetter(letter: Letter) {
+    const state = this.state$.getValue();
+    if (state.attemptedLetters.includes(letter) || state.menuConfig.menuItems.length > 0) return;
+
+    this.setState({
+      attemptedLetters: [...state.attemptedLetters, letter],
+      attemptsLeft: state.selectedOption?.includes(letter)
+        ? state.attemptsLeft
+        : state.attemptsLeft - 1,
+    });
+
+    this.gameOutcome$.pipe(
+      tap(gameOutcome => {
+        if (gameOutcome) {
+          this.openMenu();
+        }
+      })
+    ).subscribe();
+  }
+
+  quitGame() {
+    this.setState(initialState);
+    this.loadCategories();
+  }
+
+  openMenu() {
+    const state = this.state$.getValue();
+    this.gameOutcome$.pipe(
+      tap(gameOutcome => {
+        this.setState({
+          menuConfig: {
+            header: gameOutcome === 'LOSE'
               ? 'You Lose'
-              : store.gameOutcome() === 'WIN'
+              : gameOutcome === 'WIN'
               ? 'You Win'
               : 'Paused',
-          menuItems: [
-            !store.gameOutcome()
-              ? {
-                  label: 'Continue',
-                  ariaLabel: 'Resume the game and close menu',
-                  onClick: () => this.closeMenu(),
-                }
-              : {
-                  label: 'Play Again!',
-                  ariaLabel: 'Play again with the same category',
-                  routerLink:
-                    store.optionsAvailable().length === 0
-                      ? '/categories'
-                      : undefined,
-                  onClick: () =>
-                    store.optionsAvailable().length === 0
-                      ? this.quitGame()
-                      : this.startGame(store.selectedCategory()!),
-                },
-            {
-              label: 'New Category',
-              ariaLabel: 'Pick a new category and start another game',
-              routerLink: '/categories',
-              onClick: () => this.quitGame(),
-            },
-            {
-              label: 'Quit Game',
-              ariaLabel: 'Quit the game and go to the main menu',
-              routerLink: '/main-menu',
-              onClick: () => this.quitGame(),
-              buttonStyleClass: 'btn--secondary',
-            },
-          ],
-        },
-      }));
-    },
-    closeMenu() {
-      patchState(store, { menuConfig: { ...initialState.menuConfig } });
-    },
-  })),
-  withHooks({
-    onInit(store) {
-      store.loadCategories();
-    },
-  })
-);
+            menuItems: [
+              !gameOutcome
+                ? {
+                    label: 'Continue',
+                    ariaLabel: 'Resume the game and close menu',
+                    onClick: () => this.closeMenu(),
+                  }
+                : {
+                    label: 'Play Again!',
+                    ariaLabel: 'Play again with the same category',
+                    routerLink: this.state$.getValue().selectedCategory 
+                        ? this.state$.getValue().categories[this.state$.getValue().selectedCategory].filter(opt => !opt.selected).length === 0
+                            ? '/categories'
+                            : undefined
+                        : undefined,
+                    onClick: () =>
+                      this.state$.getValue().selectedCategory 
+                        ? this.state$.getValue().categories[this.state$.getValue().selectedCategory].filter(opt => !opt.selected).length === 0
+                          ? this.quitGame()
+                          : this.startGame(state.selectedCategory!)
+                        : undefined,
+                  },
+              {
+                label: 'New Category',
+                ariaLabel: 'Pick a new category and start another game',
+                routerLink: '/categories',
+                onClick: () => this.quitGame(),
+              },
+              {
+                label: 'Quit Game',
+                ariaLabel: 'Quit the game and go to the main menu',
+                routerLink: '/main-menu',
+                onClick: () => this.quitGame(),
+                buttonStyleClass: 'btn--secondary',
+              },
+            ],
+          },
+        });
+      })
+    ).subscribe();
+  }
+
+  closeMenu() {
+    this.setState({ menuConfig: { ...initialState.menuConfig } });
+  }
+}
+
 export interface GlobalStoreInterface {
   categoriesNames: () => string[];
   startGame: (category: string) => void;
 }
+
