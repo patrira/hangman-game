@@ -1,4 +1,3 @@
-
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { routeAnimations } from './shared/animations/route-animations';

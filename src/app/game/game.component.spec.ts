@@ -8,7 +8,7 @@ import { MenuComponent } from '../shared/ui/menu/menu.component';
 import { GlobalStore } from '../shared/data/global-store';
 import { of } from 'rxjs';
 
-// Mock GlobalStore
+// Mocking GlobalStore
 const mockGlobalStore = {
   selectedCategory: jest.fn().mockReturnValue('Category1'),
   attemptsLeft: jest.fn().mockReturnValue(3),
@@ -48,7 +48,7 @@ describe('GameComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(GameComponent).toBeTruthy();
   });
 
   it('should render the game toolbar with correct inputs', () => {

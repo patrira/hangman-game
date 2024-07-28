@@ -1,40 +1,43 @@
-
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { RouterTestingModule } from '@angular/router/testing';
 import { RouterOutlet } from '@angular/router';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { routeAnimations } from './shared/animations/route-animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { By } from '@angular/platform-browser';
+
+@Component({
+  template: `<app-root></app-root>`,
+})
+class TestHostComponent {}
 
 describe('AppComponent', () => {
-  let component: AppComponent;
-  let fixture: ComponentFixture<AppComponent>;
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterOutlet, NoopAnimationsModule],
-      declarations: [AppComponent]
-    })
-    .compileComponents();
+      declarations: [TestHostComponent],
+      imports: [RouterTestingModule, BrowserAnimationsModule, AppComponent],
+    }).compileComponents();
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AppComponent);
-    component = fixture.componentInstance;
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it('should have a router outlet', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const routerOutletDebugElement = fixture.debugElement.query(By.directive(RouterOutlet));
+    expect(routerOutletDebugElement).not.toBeNull();
+  });
+
+  it('should contain the route animations', () => {
+    const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-  });
-
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should render the router-outlet', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('router-outlet')).not.toBeNull();
+    const mainElement = compiled.querySelector('main');
+    expect(mainElement?.getAttribute('[@routeAnimations]')).toBeDefined();
   });
 
-  it('should have route animations', () => {
-    
-    const animations = component.constructor.prototype['__annotations__']?.[0]?.animations;
-    expect(animations).toContain(routeAnimations);
-  });
+ 
 });

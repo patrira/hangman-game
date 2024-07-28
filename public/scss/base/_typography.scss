@@ -35,7 +35,7 @@ body {
     letter-spacing: -1.3px;
 
     @include mixins.respond(tab-land) {
-      font-size: 8.4rem;
+      font-size: 10.4rem;
       letter-spacing: -0.52px;
     }
 

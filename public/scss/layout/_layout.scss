@@ -3,7 +3,7 @@
   max-width: var(--width-lg);
   width: 100%;
   margin: 0 auto;
-  padding: 6rem 19.2rem 3rem 19.2rem;
+  padding: 8rem 11.2rem 4rem 11.2rem;
 
   &::before {
     content: "";
@@ -15,10 +15,10 @@
   }
 
   @include mixins.respond(tablet) {
-    padding: 4rem 3.8rem 3rem 3rem;
+    padding: 6rem 4.8rem 4rem 4rem;
   }
 
   @include mixins.respond(phone) {
-    padding: 2.2rem 2.25rem 2.7rem 2.25rem;
+    padding: 3.2rem 2.55rem 3.2rem 2.55rem;
   }
 }

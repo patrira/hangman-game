@@ -1,6 +1,6 @@
 module.exports= {
     preset: "jest-preset-angular",
-    setupFilesAfterEnv: ["<rootDir>/setup.jest.ts"],
+    setupFilesAfterEnv: ["<rootDir>/setup-jest.ts"],
     testEnvironment: "jsdom",
     testMatch: ["**/+(*.)+(spec).+(ts)"],
     transform: {"^.+.(ts|mjs|js|html)$": ["jest-preset-angular",{tsconfig: "<rootDir>/tsconfig.spec.json",stringifyContentPathRegex: "\\.(html|svg)$",},],},
@@ -15,3 +15,4 @@ module.exports= {
     coverageReporters: ["html","lcov","text","json"],
     coverageDirectory: "coverage/jest-demo",
     };
+    
