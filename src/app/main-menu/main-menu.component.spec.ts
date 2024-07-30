@@ -4,6 +4,8 @@ import { ButtonComponent } from '../shared/ui/button/button.component';
 import { ButtonTemplateDirective } from '../shared/directives/button-template.directive';
 import { MenuComponent } from '../shared/ui/menu/menu.component';
 import { MenuTemplateDirective } from '../shared/directives/menu-template.directive';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { By } from '@angular/platform-browser';
 
 describe('MainMenuComponent', () => {
   let component: MainMenuComponent;
@@ -17,6 +19,7 @@ describe('MainMenuComponent', () => {
         ButtonTemplateDirective,
         MenuComponent,
         MenuTemplateDirective,
+        BrowserAnimationsModule,
       ],
     }).compileComponents();
 
@@ -30,33 +33,27 @@ describe('MainMenuComponent', () => {
   });
 
   it('should render the menu with the correct style class', () => {
-    const menuElement = fixture.debugElement.nativeElement.querySelector('app-menu');
+    const menuElement = fixture.debugElement.query(By.css('.menu--main'));
     expect(menuElement).toBeTruthy();
-    expect(menuElement.classList).toContain('menu--main');
   });
 
   it('should render the logo image with correct src and alt attributes', () => {
-    const logoImg = fixture.debugElement.nativeElement.querySelector('.main-menu__logo img');
-    expect(logoImg).toBeTruthy();
-    expect(logoImg.src).toContain('images/logo.svg');
-    expect(logoImg.alt).toBe('Hangman Game Logo');
+    const logoElement = fixture.debugElement.query(By.css('.main-menu__logo'));
+    expect(logoElement.attributes['src']).toBe('images/logo.svg');
+    expect(logoElement.attributes['alt']).toBe('Hangman Game Logo');
   });
 
   it('should render the play button with correct ariaLabel and image src', () => {
-    const playButton = fixture.debugElement.nativeElement.querySelector('app-button[link="/categories"]');
-    expect(playButton).toBeTruthy();
-    const iconImg = playButton.querySelector('img');
-    expect(iconImg).toBeTruthy();
-    expect(iconImg.src).toContain('images/icon-play.svg');
-    expect(playButton.getAttribute('ariaLabel')).toBe('Pick a category to start the game');
+    const playButton = fixture.debugElement.query(By.css('app-button[link="/categories"]'));
+    expect(playButton.attributes['ariaLabel']).toBe('Pick a category to start the game');
+    const playButtonImage = playButton.query(By.css('.main-menu__icon'));
+    expect(playButtonImage.attributes['src']).toBe('images/icon-play.svg');
   });
 
   it('should render the how-to-play button with correct ariaLabel and label text', () => {
-    const howToPlayButton = fixture.debugElement.nativeElement.querySelector('app-button[link="/rules"]');
-    expect(howToPlayButton).toBeTruthy();
-    const labelSpan = howToPlayButton.querySelector('span');
-    expect(labelSpan).toBeTruthy();
-    expect(labelSpan.textContent).toBe('HOW TO PLAY');
-    expect(howToPlayButton.getAttribute('ariaLabel')).toBe('Check the rules of the Hangman Game and learn how to play');
+    const howToPlayButton = fixture.debugElement.query(By.css('app-button[link="/rules"]'));
+    expect(howToPlayButton.attributes['ariaLabel']).toBe('Check the rules of the Hangman Game and learn how to play');
+    const howToPlayButtonLabel = howToPlayButton.query(By.css('.heading--sm'));
+    expect(howToPlayButtonLabel.nativeElement.textContent).toContain('HOW TO PLAY');
   });
 });
